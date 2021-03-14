@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from app.api.couriers import couriers
-from app.api.orders import orders
-from app.models import database
+from api.couriers import couriers_router
+from api.orders import orders_router
+from models.database import database
 
 app = FastAPI()
 
@@ -16,5 +16,5 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
-app.include_router(couriers, prefix='/api/couriers')
-app.include_router(orders, prefix='/api/orders')
+app.include_router(couriers_router, prefix='/api/couriers')
+app.include_router(orders_router, prefix='/api/orders')

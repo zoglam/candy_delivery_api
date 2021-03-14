@@ -4,6 +4,7 @@ venv_linux/
 *.pyc
 __pycache__/
 .vscode/
+.env
 
 instance/
 

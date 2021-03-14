@@ -3,3 +3,6 @@ uvicorn
 pydantic
 databases[mysql]
 SQLAlchemy
+mysql-connector-python
+pytest
+httpx
