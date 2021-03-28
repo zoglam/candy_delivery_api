@@ -1,7 +1,7 @@
 # ------------ BUILDER ------------
 FROM python:3.7-alpine3.12 as builder
 
-RUN apk --update add gcc mariadb-dev mariadb-client musl-dev
+RUN apk --update add g++ mariadb-dev mariadb-client musl-dev
 
 COPY ./requirements.txt /mnt/requirements.txt
 
@@ -15,8 +15,6 @@ FROM python:3.7-alpine3.12
 COPY ./app /app
 COPY --from=builder /app /app
 
-WORKDIR /app
-
 EXPOSE 8000
 
-CMD ["/app/venv/bin/uvicorn", "main:app", "--host", "0.0.0.0"]
+CMD ["/app/venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0"]
