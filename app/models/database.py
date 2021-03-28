@@ -8,12 +8,17 @@ from sqlalchemy import (
 )
 from sqlalchemy.sql.sqltypes import TIME
 
+
 metadata = MetaData()
+
+USE_MIGRATIONS = bool(os.getenv('USE_MIGRATIONS', True))
 
 DATABASE_URL = os.getenv(
     'DATABASE_URL',
-    'mysql://root:secret@localhost/mariadb'
-    )
+    'mysql://root:secret@localhost:3306/test'
+)
+
+database = databases.Database(DATABASE_URL)
 
 
 @unique
@@ -70,6 +75,7 @@ engine = create_engine(
     echo=True
 )
 
-database = databases.Database(DATABASE_URL)
-metadata.drop_all(engine)
-metadata.create_all(engine)
+if USE_MIGRATIONS:
+    print(1)
+    metadata.drop_all(engine)
+    metadata.create_all(engine)

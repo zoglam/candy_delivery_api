@@ -11,7 +11,11 @@ from app.api.error import APIError
 couriers_router = APIRouter()
 
 
-@couriers_router.post('/', status_code=201)
+@couriers_router.post(
+    '/',
+    status_code=201,
+    name="couriers:post_create_courier"
+)
 async def create_courier(list: CourierList):
     error_list = []
     valid_list = []

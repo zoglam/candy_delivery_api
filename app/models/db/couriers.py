@@ -19,11 +19,11 @@ class CourierView:
         await database.execute(query=query)
 
         for region in courier.regions:
-            RegionsView.create_region(region, courier)
+            await RegionsView.create_region(region, courier)
 
         for hours in courier.working_hours:
             start_time, end_time = hours.split('-')
-            CourierHoursView.create_courier_hours(start_time, end_time)
+            await CourierHoursView.create_courier_hours(start_time, end_time)
 
     @staticmethod
     async def get_courier(courier_id: int):
