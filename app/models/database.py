@@ -10,7 +10,10 @@ from sqlalchemy.sql.sqltypes import TIME
 
 metadata = MetaData()
 
-DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = os.getenv(
+    'DATABASE_URL',
+    'mysql://root:secret@localhost/mariadb'
+    )
 
 
 @unique

@@ -1,11 +1,12 @@
 from fastapi import APIRouter
-from fastapi.responses import JSONResponse
 from pydantic import ValidationError
-from models.schema.couriers import (
+from app.models.schema.couriers import (
     CourierList,
     Courier,
 )
-from models.db.couriers import CourierView
+from app.models.db.couriers import CourierView
+from app.api.db_manager import DBManager
+from app.api.error import APIError
 
 couriers_router = APIRouter()
 
@@ -19,17 +20,16 @@ async def create_courier(list: CourierList):
         try:
             valid_list.append({"id": Courier(**courier).courier_id})
         except ValidationError:
-            error_list.append({"id": dict(courier)['courier_id']})
-
+            error_list.append({"id": courier['courier_id']})
     if error_list:
-        return JSONResponse(
-            {'validation_error': {'couriers': error_list}},
-            status_code=400
-        )
+        return APIError.create_courier_error(error_list)
 
-    await CourierView.create_couriers(
-        [Courier(**c) for c in list.data]
-    )
+    error_list = await DBManager.existed_couriers_from(list.data)
+    if error_list:
+        return APIError.create_courier_error(error_list)
+
+    for courier in list.data:
+        await CourierView.create_courier(Courier(**courier))
 
     return {"couriers": valid_list}
 

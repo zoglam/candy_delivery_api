@@ -1,37 +1,34 @@
-from models.database import (
+import sqlalchemy
+from app.models.database import (
     database,
     couriers_table,
-    regions_table,
-    courier_hours_table
 )
-from models.schema.couriers import Courier
-from typing import List
+from app.models.schema.couriers import Courier
+from app.models.db.regions import RegionsView
+from app.models.db.courier_hours import CourierHoursView
 
 
 class CourierView:
 
     @staticmethod
-    async def create_couriers(couriers: List[Courier]):
-        for courier in couriers:
-            print(couriers)
-            print(courier)
-            query = couriers_table.insert().values(
-                courier_id=courier.courier_id,
-                courier_type=courier.courier_type
-            )
-            await database.execute(query=query)
+    async def create_courier(courier: Courier):
+        query = couriers_table.insert().values(
+            courier_id=courier.courier_id,
+            courier_type=courier.courier_type
+        )
+        await database.execute(query=query)
 
-            for region in courier.regions:
-                query = regions_table.insert().values(
-                    region_id=region,
-                    courier_id=courier.courier_id
-                )
-                await database.execute(query=query)
+        for region in courier.regions:
+            RegionsView.create_region(region, courier)
 
-            for hours in courier.working_hours:
-                start_time, end_time = hours.split('-')
-                query = courier_hours_table.insert().values(
-                    start_time=start_time,
-                    end_time=end_time
-                )
-                await database.execute(query=query)
+        for hours in courier.working_hours:
+            start_time, end_time = hours.split('-')
+            CourierHoursView.create_courier_hours(start_time, end_time)
+
+    @staticmethod
+    async def get_courier(courier_id: int):
+        id = sqlalchemy.sql.column('courier_id')
+        query = couriers_table.select().where(
+            id == courier_id
+        )
+        return await database.fetch_one(query=query)

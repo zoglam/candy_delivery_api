@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from api.couriers import couriers_router
-from api.orders import orders_router
-from models.database import database
+from app.api.couriers import couriers_router
+from app.api.orders import orders_router
+from app.models.database import database
 
 app = FastAPI()
 
