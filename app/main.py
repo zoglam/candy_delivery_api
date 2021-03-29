@@ -16,5 +16,5 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
-app.include_router(couriers_router, prefix='/api/couriers', tags=['couriers'])
-app.include_router(orders_router, prefix='/api/orders', tags=['orders'])
+app.include_router(couriers_router, prefix='/couriers', tags=['couriers'])
+app.include_router(orders_router, prefix='/orders', tags=['orders'])
